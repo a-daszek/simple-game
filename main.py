@@ -8,7 +8,7 @@ width = 900
 height = 900
 
 window = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Main Menu")
+pygame.display.set_caption("Jumping fox!")
 
 
 class Platform():
@@ -19,22 +19,42 @@ class Platform():
         self.width = width
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.area = pygame.Rect(self.x, self.y, self.width, self.height)
+#  ----- Those two lines are optional - if you want to have platforms with grass (pixel art style) you can add them.  #
+#  ----- The length of the platforms won't be diverse though------------  #
+        # self.graphics = pygame.image.load("platform.png")
+        # self.graphics = pygame.transform.scale(self.graphics, (140, 70))
 
     def draw_platform(self):
         pygame.draw.rect(window, self.color, self.area)
 
+# ----- This function is for the platforms wItH gRaSssSss ----- #
+    # def draw_platform(self):
+    #     window.blit(self.graphics, (self.x, self.y))
+
 
 class Coin():
-    def __init__(self, x, y, r):
+    # -------- class for basic drawn coins -------- #
+    # def __init__(self, x, y, r):
+    #     self.x = x
+    #     self.y = y
+    #     self.r = r
+    #     self.color = "yellow"
+    #     self.is_visible = True
+    # ---- and it's method ---- #
+    # def draw_coin(self):
+    #     if self.is_visible:
+    #         pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
+
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.r = r
-        self.color = "yellow"
+        self.graphics = pygame.image.load("golden_blueberry.png")
+        self.graphics = pygame.transform.scale(self.graphics, (60, 60))
         self.is_visible = True
 
     def draw_coin(self):
         if self.is_visible:
-            pygame.draw.circle(window, self.color, (self.x, self.y), self.r)
+            window.blit(self.graphics, (self.x, self.y))
 
     def check_picked(self, area):
         if area.collidepoint(self.x, self.y):
@@ -49,7 +69,7 @@ class Character():
         self.height = height
         self.area = pygame.Rect(self.x, self.y, self.width, self.height)
         self.graphics = pygame.image.load("foxy.png")
-        self.graphics = pygame.transform.scale(self.graphics, (70, 70))
+        self.graphics = pygame.transform.scale(self.graphics, (90, 90))
 
     def draw_character(self):
         window.blit(self.graphics, (self.x, self.y))
@@ -71,7 +91,7 @@ class Character():
         self.area = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
-player = Character(50, 150, 45, 45)
+player = Character(50, 150, 70, 70)
 
 platforms = []
 
@@ -84,23 +104,29 @@ platforms.append(Platform(0, 870, width + 50, 30))
 
 coins = []
 
+# ----- This for loop is for the basic drawn coins, where r parameter is required ---- #
+# for i in range(0, 4):
+#     coins.append(Coin(random.randint(60, 650), random.randint(60, 650), 20))
+
 for i in range(0, 4):
-    coins.append(Coin(random.randint(60, 650), random.randint(60, 650), 20))
+    coins.append(Coin(random.randint(60, 650), random.randint(60, 650)))
 
 jump_range = 0
 left_movement_active = False
 right_movement_active = False
 
-font = pygame.font.SysFont("Helvetica", 35)
+font = pygame.font.SysFont("Calibre", 35)
 
 TEXT_COL = (255, 255, 255)
 
 resume_img = pygame.image.load("button_resume.png").convert_alpha()
+resume_ib = pygame.transform.scale(resume_img, (300, 120))
 quit_img = pygame.image.load("button_quit.png").convert_alpha()
+quit_ib = pygame.transform.scale(quit_img, (220, 120))
 
 # create button instances
-resume_button = button.Button(354, 225, resume_img, 1)
-quit_button = button.Button(386, 475, quit_img, 1)
+resume_button = button.Button(300, 225, resume_ib, 1)
+quit_button = button.Button(340, 445, quit_ib, 1)
 
 
 def draw_text(text, font, text_col, x, y):
@@ -118,8 +144,6 @@ while game_on:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            # pygame.quit()
-            # quit()
             game_on = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -179,7 +203,7 @@ while game_on:
 
     if not coins_available:
         # font = pygame.font.SysFont("Helvetica", 25)
-        font_image = font.render("Congratulations!", True, "purple")
+        font_image = font.render("Congratulations!", True, "yellow")
         window.blit(font_image, (680, 20))
 
     player.draw_character()
